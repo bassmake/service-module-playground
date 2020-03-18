@@ -1,17 +1,24 @@
 package sk.bsmk.clp.domain
 
+import sk.bsmk.clp.domain.points.add.AddPointsCommand
+import sk.bsmk.clp.domain.registration.RegistrationEvent
+import sk.bsmk.clp.shared.LoyaltyTier
+import java.util.*
+
 data class CustomerEntity(
-  val id: Int,
+  val id: UUID,
   val name: String,
-  val tier: CustomerTier,
+  val tier: LoyaltyTier,
   val points: Int,
   val version: Int
 ) {
 
-  constructor(id: Int, name: String) : this(
+  constructor(event: RegistrationEvent) : this(id = event.id, name = event.name)
+
+  constructor(id: UUID, name: String) : this(
     id = id,
     name = name,
-    tier = CustomerTier.NONE,
+    tier = LoyaltyTier.NONE,
     points = 0,
     version = 1
   )
@@ -19,9 +26,9 @@ data class CustomerEntity(
   fun addPoints(addPointsCommand: AddPointsCommand): PointsAdjustedEvent {
     val newPoints = points + addPointsCommand.pointsToAdd
     val newTier = when {
-      newPoints > 100 -> CustomerTier.GOLD
-      newPoints > 50 -> CustomerTier.SILVER
-      else -> CustomerTier.NONE
+      newPoints > 100 -> LoyaltyTier.GOLD
+      newPoints > 50 -> LoyaltyTier.SILVER
+      else -> LoyaltyTier.NONE
     }
 
     return PointsAdjustedEvent(
@@ -30,15 +37,6 @@ data class CustomerEntity(
       tier = newTier,
       version = version + 1
     )
-  }
-
-  fun syncWithExternal(command: SyncWithExternalSystemCommand): DataSyncedEvent {
-    val infoToUpdate = if (tier == CustomerTier.GOLD) {
-      command.getDataCall()
-    } else {
-      null
-    }
-    return DataSyncedEvent(infoToUpdate)
   }
 
 
