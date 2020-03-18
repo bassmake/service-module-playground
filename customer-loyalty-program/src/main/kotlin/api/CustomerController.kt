@@ -2,6 +2,7 @@ package sk.bsmk.clp.api
 
 import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
+import org.springframework.jms.core.JmsTemplate
 import org.springframework.web.bind.annotation.*
 import sk.bsmk.clp.domain.CustomerEntity
 import sk.bsmk.clp.persistence.CustomerRepository
@@ -11,7 +12,10 @@ private val logger = KotlinLogging.logger {}
 
 @RestController
 @RequestMapping("/customers")
-class CustomerController(private val repository: CustomerRepository) {
+class CustomerController(
+    private val repository: CustomerRepository,
+    private val jmsTemplate: JmsTemplate
+) {
 
     @PostMapping("/registration")
     fun registration(@RequestBody registration: RegistrationRequest): CustomerDetailDto {
@@ -19,6 +23,9 @@ class CustomerController(private val repository: CustomerRepository) {
         val entity = CustomerEntity(id, registration.name)
         logger.info { "storing $entity" }
         repository.store(entity)
+        jmsTemplate.send("new-ids") { session ->
+            session.createTextMessage(String.format("new-id=%s", id));
+        }
         return CustomerDetailDto(entity)
     }
 

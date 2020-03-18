@@ -3,6 +3,7 @@ package sk.bsmk.ct;
 import com.consol.citrus.annotations.CitrusTest;
 import com.consol.citrus.dsl.testng.TestNGCitrusTestDesigner;
 import com.consol.citrus.http.client.HttpClient;
+import com.consol.citrus.jms.endpoint.JmsEndpoint;
 import com.consol.citrus.message.MessageType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -12,11 +13,15 @@ import org.testng.annotations.Test;
 
 import java.util.UUID;
 
+
 @Test
 public class CustomerDetailCT extends TestNGCitrusTestDesigner {
 
     @Autowired
     private HttpClient customersClient;
+
+    @Autowired
+    private JmsEndpoint newIdsQueue;
 
     @Test
     @CitrusTest
@@ -36,6 +41,9 @@ public class CustomerDetailCT extends TestNGCitrusTestDesigner {
                 .response(HttpStatus.OK)
                 .messageType(MessageType.JSON)
                 .validateScript(new ClassPathResource("registration/customerRegistrationResponseValidation.groovy"));
+
+        receive(newIdsQueue)
+                .payload("new-id=${customerId}");
 
         http().client(customersClient)
                 .send().get("/${customerId}");

@@ -12,8 +12,9 @@
     <description>Specifications</description>
 
     <properties>
-        <citrus.version>2.8.0</citrus.version>
         <testng.version>7.1.0</testng.version>
+        <citrus.version>2.8.0</citrus.version>
+        <activemq.version>5.15.12</activemq.version>
     </properties>
 
     <dependencies>
@@ -40,6 +41,17 @@
             <artifactId>citrus-http</artifactId>
             <version>${citrus.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.consol.citrus</groupId>
+            <artifactId>citrus-jms</artifactId>
+            <version>${citrus.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-broker</artifactId>
+            <version>${activemq.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
