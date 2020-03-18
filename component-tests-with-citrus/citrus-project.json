@@ -1,0 +1,29 @@
+{
+  "projectHome" : "~/dev/projects/service-module-playground/component-tests-with-citrus",
+  "name" : "specifications",
+  "description" : "Specifications",
+  "version" : "${revision}",
+  "settings" : {
+    "basePackage" : "",
+    "citrusVersion" : "2.8.0",
+    "springApplicationContext" : "classpath*:citrus-context.xml",
+    "springJavaConfig" : "sk.bsmk.ct.EndpointsConfig",
+    "javaSrcDirectory" : "src/test/java/",
+    "xmlSrcDirectory" : "src/test/resources/",
+    "javaFilePattern" : "/**/*Test.java,/**/*IT.java,/**/*CT.java",
+    "xmlFilePattern" : "/**/*Test.xml,/**/*IT.xml,/**/*CT.xml",
+    "useConnector" : true,
+    "connectorActive" : false,
+    "tabSize" : 2,
+    "build" : {
+      "@class" : "com.consol.citrus.admin.service.command.maven.MavenBuildContext",
+      "type" : "maven",
+      "properties" : [ ],
+      "command" : "",
+      "clean" : false,
+      "compile" : true,
+      "testPlugin" : "maven-failsafe",
+      "profiles" : null
+    }
+  }
+}

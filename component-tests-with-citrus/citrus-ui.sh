@@ -1,0 +1,1 @@
+java -Dcitrus.admin.project.home=./ -jar ~/dev/servers/citrus-admin.war
