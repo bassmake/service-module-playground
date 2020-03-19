@@ -36,14 +36,16 @@ public class CustomerRegistrationTest extends TestNGCitrusTestDesigner {
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .payload(new ClassPathResource("registration/request.json"));
 
-        applyBehavior(new CustomerRegisteredCheckBehavior(customersClient, registeredCustomersQueue));
 
         echo("Checking http response for ${customerName}");
         http().client(customersClient)
                 .receive()
                 .response(HttpStatus.OK)
                 .messageType(MessageType.JSON)
-                .validateScript(new ClassPathResource("customerDetailValidation.groovy"));
+                .validateScript(new ClassPathResource("registration/customerRegistrationResponseValidation.groovy"));
+
+        applyBehavior(new CustomerRegisteredCheckBehavior(customersClient, registeredCustomersQueue));
+
     }
 
     @Test
@@ -54,8 +56,8 @@ public class CustomerRegistrationTest extends TestNGCitrusTestDesigner {
 
         echo("Sending registration via queue for ${customerName}");
         send(registrationsQueue)
-                .messageType(MessageType.JSON)
-                .payload(new ClassPathResource("registration/request.json"));
+            .messageType(MessageType.JSON)
+            .payload(new ClassPathResource("registration/request.json"));
 
         applyBehavior(new CustomerRegisteredCheckBehavior(customersClient, registeredCustomersQueue));
     }
