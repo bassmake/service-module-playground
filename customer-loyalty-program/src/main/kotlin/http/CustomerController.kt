@@ -2,10 +2,11 @@ package sk.bsmk.clp.api
 
 import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
-import org.springframework.jms.core.JmsTemplate
 import org.springframework.web.bind.annotation.*
-import sk.bsmk.clp.domain.CustomerEntity
+import sk.bsmk.clp.domain.registration.RegistrationCommand
 import sk.bsmk.clp.persistence.CustomerRepository
+import sk.bsmk.clp.shared.RegistrationRequestDto
+import sk.bsmk.clp.usecases.RegistrationUseCase
 import java.util.*
 
 private val logger = KotlinLogging.logger {}
@@ -13,19 +14,14 @@ private val logger = KotlinLogging.logger {}
 @RestController
 @RequestMapping("/customers")
 class CustomerController(
-    private val repository: CustomerRepository,
-    private val jmsTemplate: JmsTemplate
+    private val registration: RegistrationUseCase,
+    private val repository: CustomerRepository
 ) {
 
     @PostMapping("/registration")
-    fun registration(@RequestBody registration: RegistrationRequest): CustomerDetailDto {
-        val id = UUID.randomUUID()
-        val entity = CustomerEntity(id, registration.name)
-        logger.info { "storing $entity" }
-        repository.store(entity)
-        jmsTemplate.send("new-ids") { session ->
-            session.createTextMessage(String.format("new-id=%s", id));
-        }
+    fun registration(@RequestBody registrationRequest: RegistrationRequestDto): CustomerDetailDto {
+        val command = RegistrationCommand(id = UUID.randomUUID(), name = registrationRequest.name)
+        val entity = registration.register(command)
         return CustomerDetailDto(entity)
     }
 

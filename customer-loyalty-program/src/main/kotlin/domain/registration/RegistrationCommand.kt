@@ -1,3 +1,8 @@
 package sk.bsmk.clp.domain.registration
 
-data class RegistrationCommand(val name: String)
+import java.util.*
+
+data class RegistrationCommand(
+    val id: UUID,
+    val name: String
+)

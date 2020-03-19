@@ -1,7 +1,7 @@
 package sk.bsmk.clp.domain
 
 import sk.bsmk.clp.domain.points.add.AddPointsCommand
-import sk.bsmk.clp.domain.registration.RegistrationEvent
+import sk.bsmk.clp.domain.registration.RegistrationCommand
 import sk.bsmk.clp.shared.LoyaltyTier
 import java.util.*
 
@@ -13,7 +13,17 @@ data class CustomerEntity(
   val version: Int
 ) {
 
-  constructor(event: RegistrationEvent) : this(id = event.id, name = event.name)
+  companion object {
+
+    fun register(command: RegistrationCommand): CustomerEntity {
+      return CustomerEntity(
+        id = command.id,
+        name = command.name
+      )
+    }
+
+  }
+
 
   constructor(id: UUID, name: String) : this(
     id = id,

@@ -4,16 +4,14 @@ import com.consol.citrus.dsl.endpoint.CitrusEndpoints;
 import com.consol.citrus.http.client.HttpClient;
 import com.consol.citrus.jms.endpoint.JmsEndpoint;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.broker.BrokerFactory;
-import org.apache.activemq.broker.BrokerService;
-import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jms.annotation.EnableJms;
+import org.springframework.context.annotation.Import;
 
 import javax.jms.ConnectionFactory;
 
 @Configuration
+@Import(InfrastructureConfig.class)
 public class EndpointsConfig {
 
     @Bean
@@ -31,25 +29,22 @@ public class EndpointsConfig {
     }
 
     @Bean
-    public BrokerService messageBroker() {
-        try {
-            BrokerService messageBroker = BrokerFactory.createBroker("broker:tcp://localhost:61616");
-            messageBroker.setPersistent(false);
-            messageBroker.setUseJmx(false);
-            return messageBroker;
-        } catch (Exception e) {
-            throw new BeanCreationException("Failed to create embedded message broker", e);
-        }
-    }
-
-
-    @Bean
-    public JmsEndpoint newIdsQueue() {
+    public JmsEndpoint registeredCustomersQueue() {
         return CitrusEndpoints.
                 jms()
                 .asynchronous()
                 .connectionFactory(connectionFactory())
-                .destination("new-ids")
+                .destination("registered")
+                .build();
+    }
+
+    @Bean
+    public JmsEndpoint registrationsQueue() {
+        return CitrusEndpoints.
+                jms()
+                .asynchronous()
+                .connectionFactory(connectionFactory())
+                .destination("registrations")
                 .build();
     }
 
