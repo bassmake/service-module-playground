@@ -1,10 +1,6 @@
-server.port: 9000
-logging.level.web: DEBUG
-
 spring:
-
   activemq:
-    broker-url: tcp://localhost:61616
+    broker-url: vm://clp-embedded-broker?broker.persistent=false,useShutdownHook=false
 
   kafka:
     consumer:

@@ -1,5 +1,7 @@
 package sk.bsmk.ct;
 
+import com.consol.citrus.kafka.embedded.EmbeddedKafkaServer;
+import com.consol.citrus.kafka.embedded.EmbeddedKafkaServerBuilder;
 import org.apache.activemq.broker.BrokerFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.springframework.beans.factory.BeanCreationException;
@@ -19,6 +21,14 @@ public class InfrastructureConfig {
         } catch (Exception e) {
             throw new BeanCreationException("Failed to create embedded message broker", e);
         }
+    }
+
+    @Bean
+    public EmbeddedKafkaServer kafkaServer() {
+        return new EmbeddedKafkaServerBuilder()
+                .topics("foo", "bar")
+                .kafkaServerPort(9091)
+                .build();
     }
 
 }

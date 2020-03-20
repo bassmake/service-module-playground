@@ -11,8 +11,8 @@ data class CustomerDetailDto(
 ) {
     constructor(entity: CustomerEntity) : this(
         id = entity.id.id,
-        name = entity.data.name,
-        points = entity.data.points,
-        tier = entity.data.tier
+        name = entity.name,
+        points = entity.points,
+        tier = entity.tier
     )
 }

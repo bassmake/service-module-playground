@@ -6,6 +6,5 @@ import sk.bsmk.clp.shared.LoyaltyTier
 data class PointsAdjustedEvent(
   val customerId: CustomerId,
   val points: Int,
-  val tier: LoyaltyTier,
-  val version: Int
+  val tier: LoyaltyTier
 )
