@@ -1,7 +1,6 @@
-package sk.bsmk.clp.api
+package sk.bsmk.clp.shared
 
 import sk.bsmk.clp.domain.CustomerEntity
-import sk.bsmk.clp.shared.LoyaltyTier
 import java.util.*
 
 data class CustomerDetailDto(
@@ -11,9 +10,9 @@ data class CustomerDetailDto(
     val tier: LoyaltyTier
 ) {
     constructor(entity: CustomerEntity) : this(
-        id = entity.id,
-        name = entity.name,
-        points = entity.points,
-        tier = entity.tier
+        id = entity.id.id,
+        name = entity.data.name,
+        points = entity.data.points,
+        tier = entity.data.tier
     )
 }

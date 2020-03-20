@@ -1,40 +1,42 @@
 package sk.bsmk.clp.domain
 
-import sk.bsmk.clp.domain.points.add.AddPointsCommand
+import sk.bsmk.clp.domain.points.AddPointsCommand
+import sk.bsmk.clp.domain.points.PointsAdjustedEvent
 import sk.bsmk.clp.domain.registration.RegistrationCommand
+import sk.bsmk.clp.domain.transactions.AddMonetaryTransactionCommand
+import sk.bsmk.clp.domain.transactions.MonetaryTransaction
+import sk.bsmk.clp.domain.transactions.MonetaryTransactionAddedEvent
 import sk.bsmk.clp.shared.LoyaltyTier
-import java.util.*
 
 data class CustomerEntity(
-  val id: UUID,
-  val name: String,
-  val tier: LoyaltyTier,
-  val points: Int,
+  val id: CustomerId,
+  val data: CustomerData,
+  val monetaryTransactions: List<MonetaryTransaction>,
   val version: Int
 ) {
 
   companion object {
-
     fun register(command: RegistrationCommand): CustomerEntity {
       return CustomerEntity(
         id = command.id,
         name = command.name
       )
     }
-
   }
 
-
-  constructor(id: UUID, name: String) : this(
+  constructor(id: CustomerId, name: String) : this(
     id = id,
-    name = name,
-    tier = LoyaltyTier.NONE,
-    points = 0,
-    version = 1
+    data = CustomerData(name),
+    monetaryTransactions = emptyList(),
+    version = 0
   )
 
-  fun addPoints(addPointsCommand: AddPointsCommand): PointsAdjustedEvent {
-    val newPoints = points + addPointsCommand.pointsToAdd
+  fun addMonetaryTransaction(command: AddMonetaryTransactionCommand): MonetaryTransactionAddedEvent {
+    return MonetaryTransactionAddedEvent(id, command.transaction, 0, LoyaltyTier.GOLD)
+  }
+
+  fun addPoints(command: AddPointsCommand): PointsAdjustedEvent {
+    val newPoints = data.points + command.pointsToAdd
     val newTier = when {
       newPoints > 100 -> LoyaltyTier.GOLD
       newPoints > 50 -> LoyaltyTier.SILVER

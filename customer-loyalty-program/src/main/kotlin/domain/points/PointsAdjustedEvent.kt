@@ -1,10 +1,10 @@
-package sk.bsmk.clp.domain
+package sk.bsmk.clp.domain.points
 
+import sk.bsmk.clp.domain.CustomerId
 import sk.bsmk.clp.shared.LoyaltyTier
-import java.util.*
 
 data class PointsAdjustedEvent(
-  val customerId: UUID,
+  val customerId: CustomerId,
   val points: Int,
   val tier: LoyaltyTier,
   val version: Int

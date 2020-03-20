@@ -1,8 +1,8 @@
 package sk.bsmk.clp.domain.registration
 
-import java.util.*
+import sk.bsmk.clp.domain.CustomerId
 
 data class RegistrationCommand(
-    val id: UUID,
+    val id: CustomerId,
     val name: String
 )

@@ -5,8 +5,11 @@ import mu.KotlinLogging
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.stereotype.Service
 import sk.bsmk.clp.domain.CustomerEntity
+import sk.bsmk.clp.domain.CustomerId
 import sk.bsmk.clp.domain.registration.RegistrationCommand
 import sk.bsmk.clp.persistence.CustomerRepository
+import sk.bsmk.clp.shared.RegistrationRequestDto
+import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
@@ -17,9 +20,11 @@ class RegistrationUseCase(
     val repository: CustomerRepository
 ) {
 
-    fun register(command: RegistrationCommand): CustomerEntity {
+    fun register(request: RegistrationRequestDto): CustomerEntity {
+        logger.info { "Processing request $request" }
+        val id = CustomerId(UUID.randomUUID())
+        val command = RegistrationCommand(id, request.name)
         val entity = CustomerEntity.register(command)
-        logger.info { "storing $entity" }
         repository.store(entity)
         jmsTemplate.send("registered") { session ->
             val json = objectMapper.writeValueAsString(entity)
