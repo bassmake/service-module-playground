@@ -1,4 +1,4 @@
-package sk.bsmk.ct;
+package sk.bsmk.ct.config;
 
 import com.consol.citrus.kafka.embedded.EmbeddedKafkaServer;
 import com.consol.citrus.kafka.embedded.EmbeddedKafkaServerBuilder;
@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class InfrastructureConfig {
+
+    public static final String MONETARY_TRANSACTIONS_TOPIC = "monetary-transactions";
 
     @Bean
     public BrokerService messageBroker() {
@@ -26,8 +28,7 @@ public class InfrastructureConfig {
     @Bean
     public EmbeddedKafkaServer kafkaServer() {
         return new EmbeddedKafkaServerBuilder()
-                .topics("foo", "bar")
-                .kafkaServerPort(9091)
+                .topics(MONETARY_TRANSACTIONS_TOPIC)
                 .build();
     }
 

@@ -1,0 +1,6 @@
+{
+  "customerId": "${customerId}",
+  "transactionId": "citrus:randomUUID()",
+  "amount": ${transactionAmount},
+  "currency": "EUR"
+}

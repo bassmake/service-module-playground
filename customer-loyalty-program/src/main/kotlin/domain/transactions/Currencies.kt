@@ -5,7 +5,7 @@ import java.util.*
 
 object Currencies {
 
-    val EUR: Currency = Currency.getInstance(Locale.GERMAN)
+    val EUR: Currency = Currency.getInstance(Locale.GERMANY)
     val USD: Currency = Currency.getInstance(Locale.US)
 
     fun parse(value: String): Currency? {

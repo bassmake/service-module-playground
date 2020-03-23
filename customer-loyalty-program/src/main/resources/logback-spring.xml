@@ -33,6 +33,7 @@
 
     <logger name="org.springframework.jms.connection" level="none" additivity="false"/>
     <logger name="org.springframework.jms.listener" level="none" additivity="false"/>
+    <logger name="org.apache.kafka.clients.NetworkClient" level="none" additivity="false"/>
 
     <root level="info">
         <appender-ref ref="RollingFile" />

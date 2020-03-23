@@ -7,9 +7,9 @@ import com.consol.citrus.message.MessageType;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 
-public class CustomerRegisteredCheckBehavior extends AbstractTestBehavior {
+public class RegisteredCustomerCheckBehavior extends AbstractTestBehavior {
 
-    public CustomerRegisteredCheckBehavior(
+    public RegisteredCustomerCheckBehavior(
             HttpClient customersClient,
             JmsEndpoint registeredCustomersQueue
     ) {

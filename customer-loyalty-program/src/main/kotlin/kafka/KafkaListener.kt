@@ -12,7 +12,11 @@ private val logger = KotlinLogging.logger {}
 @Component
 class KafkaListener(val processing: MonetaryTransactionProcessingUseCase) {
 
-    @KafkaListener(topics = ["monetary-transactions"])
+    companion object {
+        const val MONETARY_TRANSACTIONS_TOPIC = "monetary-transactions"
+    }
+
+    @KafkaListener(topics = [MONETARY_TRANSACTIONS_TOPIC])
     fun consumeTransaction(record: ConsumerRecord<String, MonetaryTransactionDto>) {
         logger.debug { "Received $record" }
         processing.process(record.value())
