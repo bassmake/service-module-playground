@@ -20,7 +20,7 @@ class JmsListener(
     fun register(message: TextMessage) {
         logger.info { "Received $message" }
         val request = objectMapper.readValue(message.text, RegistrationRequestDto::class.java)
-        registration.register(request)
+        registration.register(request.name)
     }
 
 }

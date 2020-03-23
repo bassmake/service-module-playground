@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "sk.bsmk.clp.external";
+option objc_class_prefix = "Ext";
+
+package external;
+
+service ExternalService {
+    rpc RegisterCustomer (CustomerRegistrationRequest) returns (CustomerRegistrationReply) {}
+}
+
+message CustomerRegistrationRequest {
+    string id = 1;
+    string name = 2;
+}
+
+message CustomerRegistrationReply {
+    int32 code = 1;
+    string message = 2;
+}

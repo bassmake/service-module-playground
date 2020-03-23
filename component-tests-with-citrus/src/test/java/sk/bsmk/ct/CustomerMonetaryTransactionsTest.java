@@ -1,21 +1,27 @@
 package sk.bsmk.ct;
 
+import com.consol.citrus.annotations.CitrusResource;
 import com.consol.citrus.annotations.CitrusTest;
-import com.consol.citrus.dsl.testng.TestNGCitrusTestDesigner;
+import com.consol.citrus.dsl.design.TestDesigner;
+import com.consol.citrus.dsl.testng.TestNGCitrusTest;
 import com.consol.citrus.http.client.HttpClient;
+import com.consol.citrus.jms.endpoint.JmsEndpoint;
 import com.consol.citrus.kafka.endpoint.KafkaEndpoint;
 import com.consol.citrus.kafka.message.KafkaMessageHeaders;
 import com.consol.citrus.message.MessageType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import sk.bsmk.ct.behaviors.CustomerHttpRegistrationBehavior;
+import sk.bsmk.ct.behaviors.RegisteredCustomerCheckBehavior;
 
 import java.math.BigDecimal;
 
 @Test
-public class CustomerMonetaryTransactionsTest extends TestNGCitrusTestDesigner {
+public class CustomerMonetaryTransactionsTest extends TestNGCitrusTest {
 
     @Autowired
     private HttpClient customersHttpClient;
@@ -23,29 +29,33 @@ public class CustomerMonetaryTransactionsTest extends TestNGCitrusTestDesigner {
     @Autowired
     private KafkaEndpoint monetaryTransactionsTopic;
 
-    @Test
+    @Autowired
+    private JmsEndpoint registeredCustomersQueue;
+
+    @Parameters("designer")
     @CitrusTest
-    public void receivingMonetaryTransaction() {
+    public void receivingMonetaryTransaction(@Optional @CitrusResource TestDesigner designer) {
+        designer.variable("customerName", "citrus:concat('customer-name-trx_', citrus:randomNumber(4))");
+        designer.variable("transactionAmount", new BigDecimal("10.0"));
 
-        variable("customerName", "citrus:concat('customer-name_', citrus:randomNumber(4))");
-        variable("transactionAmount", new BigDecimal("10.0"));
+        designer.applyBehavior(new CustomerHttpRegistrationBehavior(customersHttpClient));
 
-        applyBehavior(new CustomerHttpRegistrationBehavior(customersHttpClient));
+        designer.applyBehavior(new RegisteredCustomerCheckBehavior(customersHttpClient, registeredCustomersQueue));
 
-        send(monetaryTransactionsTopic)
+        designer.send(monetaryTransactionsTopic)
                 .header(KafkaMessageHeaders.MESSAGE_KEY, "not-used")
                 .messageType(MessageType.JSON)
                 .payload(new ClassPathResource("monetary-transaction/monetaryTransaction.json"));
 
-        sleep(1.0);
+        designer.sleep(1.0);
 
-        echo("Checking customer detail http response for ${customerName}");
+        designer.echo("Checking customer detail http response for ${customerName}");
 
-        http().client(customersHttpClient)
+        designer.http().client(customersHttpClient)
                 .send().get("/${customerId}");
 
-        variable("customerPoints", 1);
-        http().client(customersHttpClient)
+        designer.variable("customerPoints", 1);
+        designer.http().client(customersHttpClient)
                 .receive()
                 .response(HttpStatus.OK)
                 .messageType(MessageType.JSON)

@@ -21,7 +21,7 @@ class CustomerController(
 
     @PostMapping("/registration")
     fun registration(@RequestBody registrationRequest: RegistrationRequestDto): CustomerDetailDto {
-        val entity = registration.register(registrationRequest)
+        val entity = registration.register(registrationRequest.name)
         return CustomerDetailDto(entity)
     }
 
